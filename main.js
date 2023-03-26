@@ -5,7 +5,6 @@ canvas.width = window.innerWidth - 100;
 canvas.height = window.innerHeight - 100;
 
 // 엘리스 이미지 넣어보기
-// 엘리스 이미지 넣어보기
 let img2 = new Image();
 img2.src = 'elice.png';
 img2.onload = () => {
@@ -16,8 +15,8 @@ img2.onload = () => {
 let elice = {
   x: 10,
   y: 200,
-  width: 50,
-  height: 50,
+  width: 45,
+  height: 45,
   draw() {
     ctx.fillStyle = 'green';
     ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -31,7 +30,6 @@ img1.src = 'jsjs.png';
 img1.onload = () => {
   cactus.draw();
 };
-
 
 // elice.draw();
 
@@ -49,6 +47,8 @@ class Cactus {
     ctx.drawImage(img1, this.x, this.y);
   }
 }
+
+
 
 let cactus = new Cactus();
 cactus.draw();
@@ -69,6 +69,15 @@ function updateScore() {
   document.getElementById('score').textContent = score;
 }
 
+// 랜덤으로 나오게 하기
+// function getRandomFloat(min, max) {
+//   return Math.random() * (max - min) + min;
+// }
+// floor로 정수로 바꿔줘서 그런듯?
+function getRandomFloat(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 function playFrame() {
   animation = requestAnimationFrame(playFrame);
   timer++;
@@ -77,30 +86,23 @@ function playFrame() {
   //캔버스 클리어
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-
-  // // 2초마다 등장하는 느낌
+  // 2초마다 등장하는 느낌
   // if (timer % 120 === 0) {
   //   let cactus = new Cactus();
   //   manyCactus.push(cactus);
   // }
 
-  // 장애물 생성 타이머를 50-100 사이 랜덤 값으로 지정
-  let cactusInterval = Math.floor(Math.random() * (100 - 50 + 1)) + 50;
+  // // 랜덤한 시간마다 장애물 등장 1초에서 3초사이 간격으로 등장하게 만듬!!!
+  // if (timer % Math.floor(getRandomFloat(1, 3) * 60) === 0) {
+  //   let cactus = new Cactus();
+  //   manyCactus.push(cactus);
+  // }
 
-  // 이전 장애물과 새로운 장애물 사이의 최소 거리
-  let minDistance = 300;
-
-  // timer 값이 cactusInterval 값의 배수일 때만 새로운 장애물 생성
-  if (timer % cactusInterval === 0) {
-    let lastCactus = manyCactus[manyCactus.length - 1];
-    let lastCactusRight = lastCactus ? lastCactus.x + lastCactus.width : 0;
-    let distance = canvas.width - lastCactusRight;
-
-    // 장애물의 거리가 최소 300이 되게
-    if (distance > minDistance) {
-      let cactus = new Cactus();
-      manyCactus.push(cactus);
-    }
+  // 랜덤한 시간마다 장애물 등장 1초에서 3초사이 간격으로 등장하게 만듬!!!
+  // 1초 2초 3초만 나오는 딱딱한 랜덤이 문제
+  if (timer % (getRandomFloat(1, 3) * 60) === 0) {
+    let cactus = new Cactus();
+    manyCactus.push(cactus);
   }
 
   manyCactus.forEach((a, i, o) => {
