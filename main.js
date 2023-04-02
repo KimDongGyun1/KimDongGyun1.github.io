@@ -92,15 +92,9 @@ function playFrame() {
   //   manyCactus.push(cactus);
   // }
 
-  // // 랜덤한 시간마다 장애물 등장 1초에서 3초사이 간격으로 등장하게 만듬!!!
-  // if (timer % Math.floor(getRandomFloat(1, 3) * 60) === 0) {
-  //   let cactus = new Cactus();
-  //   manyCactus.push(cactus);
-  // }
-
   // 랜덤한 시간마다 장애물 등장 1초에서 3초사이 간격으로 등장하게 만듬!!!
   // 1초 2초 3초만 나오는 딱딱한 랜덤이 문제
-  if (timer % (getRandomFloat(1, 3) * 60) === 0) {
+  if (timer % (getRandomFloat(1, 4) * 60) === 0) {
     let cactus = new Cactus();
     manyCactus.push(cactus);
   }
