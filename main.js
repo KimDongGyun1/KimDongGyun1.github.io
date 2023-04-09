@@ -6,26 +6,33 @@ canvas.height = window.innerHeight - 100;
 
 // 장애물이미지 넣어보기
 let img1 = new Image();
-img1.src = 'jsjs.png';
+img1.src = 'img/jsjs.png';
 img1.onload = () => {
   cactus.draw();
 };
 
 // 엘리스 이미지 넣어보기
 let img2 = new Image();
-img2.src = 'elice.png';
+img2.src = 'img/elice.png';
 img2.onload = () => {
   elice.draw();
 };
 
 // 당근 이미지 넣어보기
 let img3 = new Image();
-img3.src = 'carrot.jpeg';
+img3.src = 'img/carrot.jpeg';
 img3.onload = () => {
   carrot.draw();
 };
 
+// 효과음
+const eatSound = new Audio('sound/eat.mp3');
+const jumpSound = new Audio('sound/jump.mp3');
+const gameoverSound = new Audio('sound/gameover.mp3');
+const clearSound = new Audio('sound/clear.mp3');
 
+
+// 주인공 엘리스
 let elice = {
   x: 10,
   y: 200,
@@ -40,9 +47,10 @@ let elice = {
 
 // elice.draw();
 
+// 장애물 클래스
 class Cactus {
   constructor() {
-    this.x = 500;
+    this.x = 1000;
     this.y = 200;
     this.width = 50;
     this.height = 50;
@@ -58,7 +66,7 @@ class Cactus {
 // 당근 클래스
 class Carrot {
   constructor() {
-    this.x = 500;
+    this.x = 1000;
     this.y = 100;
     this.width = 30;
     this.height = 30;
@@ -71,14 +79,15 @@ class Carrot {
   }
 }
 
+// 장애물과 당근 그리기
 let cactus = new Cactus();
 let carrot = new Carrot();
 cactus.draw();
 carrot.draw();
 
 let timer = 0;
-let manyCactus = [];
-let manyCarrot = [];
+let manyCactus = []; // 장애물을 담는 배열
+let manyCarrot = []; // 당근을 담는 배열
 let jumpTimer = 0;
 let jumping = false;
 let animation;
@@ -182,20 +191,29 @@ function crash(elice, cactus) {
   let crashX = elice.x + elice.width > cactus.x;
   let crashY = elice.y + elice.height > cactus.y;
   if (crashX && crashY) {
-    cancelAnimationFrame(animation); // 게임 종료
-    alert('Game Over');
-    location.reload(); // 페이지 새로고침
+    if (score > 3000) {
+      cancelAnimationFrame(animation); // 게임 종료
+      clearSound.play(); // 클리어 사운드
+      alert('엘리스는 자바스크립트 마스터!!');
+      location.reload(); // 페이지 새로고침
+    } else {
+      cancelAnimationFrame(animation); // 게임 종료
+      gameoverSound.play(); // 게임종료 사운드
+      alert('엘리스는 자바스크립트의 벽을 못넘고 말았습니다....');
+      location.reload(); // 페이지 새로고침
+    }
   }
 }
 
 // 당근과 충돌
 function crash_carrot(elice, carrot) {
-  let crashX = elice.x + elice.width > carrot.x;
-  let crashY = elice.y + elice.height > carrot.y;
+  let crashX = elice.x + elice.width > carrot.x && elice.x < carrot.x + carrot.width;
+  let crashY = elice.y + elice.height > carrot.y && elice.y < carrot.y + carrot.height;
   if (crashX && crashY) {
     // 엘리스와 당근이 부딪혔을때
     manyCarrot.shift(); // 당근 제거
     carrotScore += 500; // 점수 증가 값 저장
+    eatSound.play();// 당근 먹는 소리 재생
   }
 }
 
@@ -203,6 +221,7 @@ function crash_carrot(elice, carrot) {
 // 스페이스바를 누르면 점핑이 트루가 된다 
 document.addEventListener('keydown', function (e) {
   if (e.code === 'Space') {
+    jumpSound.play(); // 점프사운드
     // 점프카운트를 2를 줘서 두번점프하게끔 만듬
     if (jumpCount < 2) {
       jumping = true;
